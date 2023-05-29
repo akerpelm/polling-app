@@ -6,8 +6,39 @@ const Exercise = require('../models/Exercise');
 // @route GET /api/exercises
 // @access  Private
 exports.getExercises = asyncHandler(async (req, res, next) => {
-  const exercises = Exercise.find();
-  res.status(200).json({ success: true, data: exercises });
+  // Pagination parameters
+  const page = parseInt(req.query.page, 10) || 1; // Current page (default: 1)
+  const limit = parseInt(req.query.limit, 10) || 10; // Number of exercises per page (default: 10)
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  // Query exercises with pagination
+  const total = await Exercise.countDocuments();
+  const exercises = await Exercise.find().skip(startIndex).limit(limit);
+
+  // Pagination result
+  const pagination = {};
+
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit: limit
+    };
+  }
+
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit: limit
+    };
+  }
+
+  // Send response
+  res.status(200).json({
+    success: true,
+    pagination,
+    data: exercises
+  });
 });
 
 // @desc  Get single exercise
