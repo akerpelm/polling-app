@@ -25,7 +25,8 @@ const connectDB = require('./config/db');
 // const courses = require('./routes/courses');
 const auth = require('./routes/auth');
 const users = require('./routes/users');
-// const reviews = require('./routes/reviews');
+const exercises = require('./routes/exercises');
+const workouts = require('./routes/workouts');
 
 // Connect to database;
 connectDB();
@@ -76,7 +77,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/api/v1/courses', courses);
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/users', users);
-// app.use('/api/v1/reviews', reviews);
+app.use('/api/v1/exercises', exercises);
+app.use('/api/v1/workouts', workouts);
 
 // Middlewares
 app.use(errorHandler);
